@@ -12,7 +12,15 @@ var expect = require('chai').expect;
 var MongoClient = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 
-const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
+const CONNECTION_STRING = process.env.DATABASE;
+
+// MongoClient.connect(CONNECTION_STRING, function(err, db) {
+//   if (err) {
+//     console.log('error with database connection')
+//   } else {
+//     console.log(`connected to mongo database, ${db}`)
+//   }
+// });
 
 module.exports = function (app) {
 
@@ -20,6 +28,7 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
+      res.send('hello there!')
       
     })
     

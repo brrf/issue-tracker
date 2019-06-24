@@ -25,8 +25,13 @@ module.exports = function (app) {
     .post(async function (req, res){
       let project = mongoose.model(req.params.project, issueSchema)
       let issue = req.body
-      const newIssue = await project.create(issue);
-      await res.json(newIssue);
+      try {
+       const newIssue = await project.create(issue);
+       await res.json(newIssue);
+      }
+      catch {
+        res.send('something went wrong')
+      }    
     })
     
     .put(async function (req, res){
@@ -42,6 +47,8 @@ module.exports = function (app) {
       if (Object.keys(issue).length === 0) {
         return res.send('no updated field sent')
       }
+
+      issue.updated_on = new Date();
 
       try {
         await project.findByIdAndUpdate(id, issue, {new: true}).exec(); 

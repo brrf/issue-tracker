@@ -26,6 +26,15 @@ module.exports = new mongoose.Schema({
 		type: Boolean,
 		required: true,
 		default: true
+	},
+	created_on: {
+		required: true,
+		type: Date,
+		default: Date.now
+	},
+	updated_on: {
+		required: true,
+		type: Date,
+		default: Date.now
 	}
-}, {timestamps: true, versionKey: false})
-
+}, {versionKey: false})

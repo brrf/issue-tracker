@@ -27,6 +27,6 @@ const issueSchema = new mongoose.Schema({
 		required: true,
 		default: true
 	}
-}, {timestamps: true})
+}, {timestamps: true, versionKey: false})
 
 module.exports = mongoose.model('issue', issueSchema);

@@ -7,50 +7,63 @@
 */
 
 'use strict';
-const Issues = require('../schemas/issues')
-var expect = require('chai').expect;
-// var MongoClient = require('mongodb');
-// var ObjectId = require('mongodb').ObjectID;
-
-// const CONNECTION_STRING = process.env.DATABASE;
-
-// // MongoClient.connect(CONNECTION_STRING, function(err, db) {
-// //   if (err) {
-// //     console.log('error with database connection')
-// //   } else {
-// //     console.log(`connected to mongo database, ${db}`)
-// //   }
-// // });
+const issueSchema = require('../schemas/issues')
+const expect = require('chai').expect;
+const mongoose = require('mongoose');
 
 module.exports = function (app) {
 
   app.route('/api/issues/:project')
   
-    .get(function (req, res){
-      let project = req.params.project;
-      res.send('hello there!')
+    .get(async function (req, res){
+      let project = mongoose.model(req.params.project, issueSchema)
+      let issues = await project.find(req.query)
+      res.json(issues);
       
     })
     
     .post(async function (req, res){
-      let project = req.body
-      const newIssue = await Issues.create(project);
+      let project = mongoose.model(req.params.project, issueSchema)
+      let issue = req.body
+      const newIssue = await project.create(issue);
       await res.json(newIssue);
     })
     
     .put(async function (req, res){
-      let project = req.body;
-      const id =req.body._id
+      let project = mongoose.model(req.params.project, issueSchema)
 
+      let issue = req.body
+      const id = req.body._id
       delete req.body._id;
-      for (let key in project) {
-        if (project[key] === '') delete project[key]
+
+      for (let key in issue) {
+        if (issue[key] === '') delete issue[key]
       }
-      await Issues.findByIdAndUpdate(id, project, {new: true})      
+      if (Object.keys(issue).length === 0) {
+        return res.send('no updated field sent')
+      }
+
+      try {
+        await project.findByIdAndUpdate(id, issue, {new: true}).exec(); 
+        await res.send('successfully updated')     
+      }
+      catch {
+        res.send(`could not update ${id}`)
+      }
+      
     })
     
     .delete(async function (req, res){
-      await Issues.findByIdAndDelete(req.body._id)
+      let project = mongoose.model(req.params.project, issueSchema)
+      if (!req.body._id) {
+        return res.send('_id error');
+      }
+      try {
+        await project.findByIdAndDelete(req.body._id).exec();
+        res.send(`deleted ${req.body._id}`)
+      }
+      catch {
+        res.send(`could not delete ${req.body._id}`)
+      }     
     });
-    
 };

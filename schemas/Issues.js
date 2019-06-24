@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const issueSchema = new mongoose.Schema({
+module.exports = new mongoose.Schema({
 	issue_title: {
 		type: String,
 		required: true
@@ -29,4 +29,3 @@ const issueSchema = new mongoose.Schema({
 	}
 }, {timestamps: true, versionKey: false})
 
-module.exports = mongoose.model('issue', issueSchema);

@@ -1,31 +1,32 @@
 const mongoose = require('mongoose');
 
 
-const issue = new mongoose.Schema({
-	title: {
+const issueSchema = new mongoose.Schema({
+	issue_title: {
+		type: String,
+		required: true
+	},
+	issue_text:  {
+		type: String,
+		required: true
+	},
+	created_by: {
+		type: String,
+		required: true
+	},
+	assigned_to: {
 		type: String,
 		required: false
 	},
-	text:  {
-		type: String,
-		required: false
-	},
-	creator: {
-		type: String,
-		required: false
-	},
-	assignee: {
-		type: String,
-		required: false
-	},
-	status: {
+	status_text: {
 		type: String,
 		required: false
 	},
 	open: {
 		type: Boolean,
-		required: true
+		required: true,
+		default: true
 	}
 }, {timestamps: true})
 
-const Issue = mongoose.model('issue', issue);
+module.exports = mongoose.model('issue', issueSchema);
